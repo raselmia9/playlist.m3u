@@ -1,13 +1,31 @@
 #EXTM3U
 
-#EXTINF:-1 group-title="Sports",BBC Sports
-http://example.com/stream1
+#EXTINF:-1 group-title="Sports",FIFA TV Live
+http://example.com/stream1.m3u8
 
-#EXTINF:-1 group-title="Sports",ESPN
-http://example.com/stream2
+#EXTINF:-1 group-title="Sports",Global Sports 1
+http://example.com/stream2.m3u8
 
-#EXTINF:-1 group-title="News",CNN
-http://example.com/stream3
+#EXTINF:-1 group-title="Sports",World Cup Channel
+http://example.com/stream3.m3u8
 
-#EXTINF:-1 group-title="Movies",Hollywood Hits
-http://example.com/stream4
+#EXTINF:-1 group-title="Sports",Premium Sports
+http://example.com/stream4.m3u8
+
+#EXTINF:-1 group-title="Sports",Live Action
+http://example.com/stream5.m3u8
+
+#EXTINF:-1 group-title="Sports",Match Day 1
+http://example.com/stream6.m3u8
+
+#EXTINF:-1 group-title="Sports",Match Day 2
+http://example.com/stream7.m3u8
+
+#EXTINF:-1 group-title="Sports",Footy Central
+http://example.com/stream8.m3u8
+
+#EXTINF:-1 group-title="Sports",Arena Sports
+http://example.com/stream9.m3u8
+
+#EXTINF:-1 group-title="Sports",Stadium Live
+http://example.com/stream10.m3u8
