@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { background-color: #0d1117; color: #fff; font-family: sans-serif; margin: 0; padding: 5px; width: 100%; overflow-x: hidden; }
+        .search-box { display: none; }
+        .category-bar { display: flex; overflow-x: auto; gap: 8px; padding: 10px 5px; white-space: nowrap; margin-bottom: 10px; position: sticky; top: 0; background-color: #0d1117; z-index: 999; }
+        .category-bar::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #374151; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; flex-shrink: 0; }
+        .cat-btn:hover { background: #58a6ff; }
+        .container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%; }
+        .card { background: #161b22; border: 1px solid #374151; padding: 5px; border-radius: 8px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100px; overflow: hidden; }
+        .card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background-color: #2b313b; }
+        .name { font-size: 8px; margin-top: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 90%; }
+        .loader-wrapper { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #374151; border-top: 4px solid #58a6ff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+
+
+
+/* কার্ডের RGB বর্ডার এনিমেশন */
+.card { 
+    background: #161b22; 
+    border: 0.3px solid transparent; 
+    border-radius: 8px; 
+    padding: 5px; 
+    text-align: center; 
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    height: 100px; 
+    overflow: hidden;
+    
+    /* RGB বর্ডার এনিমেশন */
+    background-image: linear-gradient(#161b22, #161b22), linear-gradient(90deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #ff00c8, #ff0000);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    background-size: 200% 100%;
+    animation: rgb-border 15s linear infinite;
+}
+
+@keyframes rgb-border {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* লোগো লোড না হওয়া পর্যন্ত পালস ইফেক্ট */
+.card img { 
+    width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background-color: #2b313b; 
+    animation: logo-pulse 10.5s infinite ease-in-out;
+}
+
+@keyframes logo-pulse {
+    0% { opacity: 2.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div id="status" class="loader-wrapper"><div class="spinner"></div></div>
+    
+    <input type="text" id="search" class="search-box" oninput="filterMatches(this.value)">
+    
+    <div id="cat-container" class="category-bar"></div>
+    <div class="container" id="main"></div>
+
+    <script>
+
+        // আপনার দেওয়া সেই আগের ফরম্যাটের ইউআরএলটি এখানে বসান
+        const targetUrl = 'INPUT URL';
+        const defaultLogo = "https://cdn-icons-png.flaticon.com/512/2305/2305896.png"; 
+
+        let allChannels = [];
+        let categories = new Set();
+        let currentActiveCategory = "All";
+
+        async function loadChannels() {
+            try {
+                const response = await fetch(targetUrl);
+                const data = await response.text();
+                parseM3U(data);
+            } catch (error) { document.getElementById('status').innerHTML = "নেটওয়ার্ক এরর!"; }
+        }
+
+        function parseM3U(data) {
+            const lines = data.split('\n');
+            document.getElementById('status').style.display = 'none';
+            let masterCookie = "";
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (line.includes("Edge-Cache-Cookie=")) {
+                    masterCookie = line.split("Edge-Cache-Cookie=")[1].split(/[ "']/)[0];
+                }
+                if (line.startsWith("#EXTINF")) {
+                    const name = line.split(',').pop().trim();
+                    const group = line.includes('group-title="') ? line.split('group-title="')[1].split('"')[0] : "Others";
+                    const logo = line.match(/tvg-logo="(.*?)"/)?.[1] || '';
+                    let url = "", channelCookie = "";
+                    let j = i + 1;
+                    while (j < lines.length && !lines[j].trim().startsWith("#EXTINF")) {
+                        let nLine = lines[j].trim();
+                        if (nLine.includes("Edge-Cache-Cookie=")) channelCookie = nLine.split("Edge-Cache-Cookie=")[1].split(/[ "']/)[0];
+                        if (nLine.startsWith("http")) url = nLine.split('|')[0].trim();
+                        j++;
+                    }
+                    if (url) {
+                        allChannels.push({ name, url, logo, group, cookie: channelCookie || masterCookie });
+                        categories.add(group);
+                    }
+                    i = j - 1;
+                }
+            }
+            renderCategories();
+            renderChannels(allChannels);
+        }
+
+        function renderCategories() {
+            const bar = document.getElementById('cat-container');
+            bar.innerHTML = `<button class="cat-btn" onclick="filterByCategory('All')">All</button>`;
+            Array.from(categories).sort().forEach(cat => bar.innerHTML += `<button class="cat-btn" onclick="filterByCategory('${cat}')">${cat}</button>`);
+        }
+
+        function filterByCategory(cat) {
+            currentActiveCategory = cat;
+            filterMatches('');
+        }
+
+        function filterMatches(query) {
+            const filtered = allChannels.filter(ch => 
+                (currentActiveCategory === 'All' || ch.group === currentActiveCategory) && 
+                ch.name.toLowerCase().includes(query.toLowerCase())
+            );
+            renderChannels(filtered);
+        }
+
+
+
+        function renderChannels(channels) {
+            const main = document.getElementById('main');
+            main.innerHTML = '';
+            channels.forEach((ch) => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                
+                // ইমেজ এলিমেন্ট তৈরি
+                const img = document.createElement('img');
+                img.src = ch.logo || defaultLogo;
+                
+                // এরর হ্যান্ডলিং: ইমেজ না পেলে আপনার দেওয়া লোগো দেখাবে
+                img.onerror = function() {
+                    this.src = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkC1LwR663VtQyQXKcpCfB3S-DDsaeuu63if6RkMXcZKNQeKdcyrCWvN65SjzjeMR2yDJnwuCoFavj5ncjkLPc6XKQ2GIK-UTfa8GGmc6SA58eKAHWAnmyDp64dCN8l6Qmrl2YnaorFuSmZqfSO8Hr9v_UQdeSS7QVnDXJTPOiEpMIMqsbD6zIIgUg5Ww/s1254/file_00000000ffb071fa84c1f07f7b4079e7.png';
+                };
+
+                div.appendChild(img);
+                div.innerHTML += `<div class="name">${ch.name}</div>`;
+                
+                div.onclick = () => {
+                    const finalString = ch.cookie ? `${ch.url}|Cookie=Edge-Cache-Cookie=${ch.cookie}` : ch.url;
+                    if (window.AppInventor) window.AppInventor.setWebViewString(finalString);
+                    else alert(finalString);
+                };
+                main.appendChild(div);
+            });
+        }
+
+
+
+        loadChannels();
+    </script>
+</body>
+      </html>
