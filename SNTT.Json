@@ -1,107 +1,107 @@
 [
     {
         "Ship Name": "SNTT All Tank",
-        "Tank C": 15438,
+        "Tank C": "15438",
         "C Link": "https://drive.usercontent.google.com/download?id=1tC4GRaIBjzhqBl9Ry7UEww4dm0d3iEXl&export=download"
     },
     {
         "Ship Name": "SGTT All Tank",
-        "Tank C": 16795,
+        "Tank C": "16795",
         "C Link": "None"
     },
     {
         "Ship Name": "BAT 01",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1QzFs2cm2h7MRl1Up9aopP-Zc80Jh4rID&export=download"
     },
     {
         "Ship Name": "BAT 02",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1qcPEZtSlXuyRxL5-d6VptbIHA2HrXHHv&export=download"
     },
     {
         "Ship Name": "BAT 03",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=18E1cdvNdCVfaPNF4CjfMZXlfK9bDH6ke&export=download"
     },
     {
         "Ship Name": "Binzaman 01",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1q08_ENZYdDib20Hgh_zDU9kUeekmiff1&export=download"
     },
     {
         "Ship Name": "Binzaman 02",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1WlQxR_z2x92Z0VxMO7wIulxdxyrGmip4&export=download"
     },
     {
         "Ship Name": "Binzaman 03",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1XqSkpBntZMQRA8A3u48257M3qQGQRKGb&export=download"
     },
     {
         "Ship Name": "Binzaman 04",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1_HDEyU8mBLdbIVLJFXjK67Rc6I2Xlkhy&export=download"
     },
     {
         "Ship Name": "Mesra",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=13vHg3LGq3p_WWYlwI1ppzIbYCcvpqVx2&export=download"
     },
     {
         "Ship Name": "Ishan 02",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "File"
     },
     {
         "Ship Name": "Ishan 03",
-        "Tank C": 8,
+        "Tank C": "8",
         "C Link": "File"
     },
     {
         "Ship Name": "Ishan 04",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "File"
     },
     {
         "Ship Name": "Kingfisher 03",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1ePwDVkpswBPu-3lvkGyj0lOzZWPADWHn&export=download"
     },
     {
         "Ship Name": "Kingfisher 04",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1dCtgC1gNWNFyRUN0N9oXLSijdtKwfmHM&export=download"
     },
     {
         "Ship Name": "Mehetaz Nigar",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "File"
     },
     {
         "Ship Name": "M.T Rukh",
-        "Tank C": 8,
+        "Tank C": "8",
         "C Link": "https://drive.usercontent.google.com/download?id=1BKKmBYon3VFg04KKu2pSdLyCyicemnmd&export=download"
     },
     {
         "Ship Name": "Shanghai 07",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1N9tvzfOR3xJxh1-8_P6ITdZofaQkZvtv&export=download"
     },
     {
         "Ship Name": "O.T SHANGHAI-01",
-        "Tank C": 6,
+        "Tank C": "6",
         "C Link": "https://drive.usercontent.google.com/download?id=1vzSKqSiwNlSuYJDygiBYWafF0tFne2WE&export=download"
     },
     {
         "Ship Name": "SNTT Version Code",
-        "Tank C": 4.0,
+        "Tank C": "4.0",
         "C Link": "4.0"
     },
     {
         "Ship Name": "Category and Playlist Code",
-        "Tank C": <!DOCTYPE html>
+        "Tank C": "<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -268,7 +268,7 @@ document.querySelectorAll('.cat-icon img').forEach(img => {
 
     </script>
 </body>
-</html>,
+</html>",
         "C Link": "<!DOCTYPE html>
 <html lang="bn">
 <head>
