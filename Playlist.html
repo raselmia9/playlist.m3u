@@ -26,7 +26,7 @@
 /* কার্ডের RGB বর্ডার এনিমেশন */
 .card { 
     background: #161b22; 
-    border: 0.9px solid transparent; 
+    border: 0.3px solid transparent; 
     border-radius: 8px; 
     padding: 5px; 
     text-align: center; 
@@ -94,7 +94,7 @@
     <script>
 
         // আপনার দেওয়া সেই আগের ফরম্যাটের ইউআরএলটি এখানে বসান
-        const targetUrl = 'INPUT URL';
+        const targetUrl = "INPUT URL";
         const defaultLogo = "https://cdn-icons-png.flaticon.com/512/2305/2305896.png"; 
 
         let allChannels = [];
@@ -110,37 +110,63 @@
         }
 
         function parseM3U(data) {
-            const lines = data.split('\n');
-            document.getElementById('status').style.display = 'none';
-            let masterCookie = "";
+    const lines = data.split('\n');
+    document.getElementById('status').style.display = 'none';
+    let masterCookie = "";
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (line.includes("Edge-Cache-Cookie=")) masterCookie = line.split("Edge-Cache-Cookie=")[1].split(/[ "']/)[0];
+        
+        if (line.startsWith("#EXTINF")) {
+            const name = line.split(',').pop().trim();
+            const group = line.includes('group-title="') ? line.split('group-title="')[1].split('"')[0] : "Others";
+            const logo = line.match(/tvg-logo="(.*?)"/)?.[1] || '';
             
-            for (let i = 0; i < lines.length; i++) {
-                let line = lines[i].trim();
-                if (line.includes("Edge-Cache-Cookie=")) {
-                    masterCookie = line.split("Edge-Cache-Cookie=")[1].split(/[ "']/)[0];
+            let url = "", channelCookie = "", channelReferer = "";
+            let j = i + 1;
+            
+            // পরবর্তী লাইনগুলো চেক করছি
+            while (j < lines.length && !lines[j].trim().startsWith("#EXTINF")) {
+                let nLine = lines[j].trim();
+                
+                // কুকি সংগ্রহ
+                if (nLine.includes("Edge-Cache-Cookie=")) channelCookie = nLine.split("Edge-Cache-Cookie=")[1].split(/[ "']/)[0];
+                
+                // রেফারার ট্যাগ থেকে রেফারার সংগ্রহ (#EXTVLCOPT:http-referrer=...)
+                if (nLine.includes("http-referrer=")) {
+                    channelReferer = nLine.split("http-referrer=")[1].split(/[ "']/)[0];
                 }
-                if (line.startsWith("#EXTINF")) {
-                    const name = line.split(',').pop().trim();
-                    const group = line.includes('group-title="') ? line.split('group-title="')[1].split('"')[0] : "Others";
-                    const logo = line.match(/tvg-logo="(.*?)"/)?.[1] || '';
-                    let url = "", channelCookie = "";
-                    let j = i + 1;
-                    while (j < lines.length && !lines[j].trim().startsWith("#EXTINF")) {
-                        let nLine = lines[j].trim();
-                        if (nLine.includes("Edge-Cache-Cookie=")) channelCookie = nLine.split("Edge-Cache-Cookie=")[1].split(/[ "']/)[0];
-                        if (nLine.startsWith("http")) url = nLine.split('|')[0].trim();
-                        j++;
-                    }
-                    if (url) {
-                        allChannels.push({ name, url, logo, group, cookie: channelCookie || masterCookie });
-                        categories.add(group);
-                    }
-                    i = j - 1;
+                
+                // ইউআরএল সংগ্রহ
+                if (nLine.startsWith("http")) {
+                    url = nLine;
                 }
+                j++;
             }
-            renderCategories();
-            renderChannels(allChannels);
+            
+            if (url) {
+                // রেফারার থাকলে লিংকের সাথে যোগ করে দিচ্ছি
+                let finalUrl = url;
+                if (channelReferer) {
+                    finalUrl += `|Referer=${channelReferer}`;
+                }
+                
+                allChannels.push({ 
+                    name, 
+                    url: finalUrl, 
+                    logo, 
+                    group, 
+                    cookie: channelCookie || masterCookie 
+                });
+                categories.add(group);
+            }
+            i = j - 1;
         }
+    }
+    renderCategories();
+    renderChannels(allChannels);
+}
 
         function renderCategories() {
             const bar = document.getElementById('cat-container');
