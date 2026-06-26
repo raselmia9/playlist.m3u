@@ -168,11 +168,16 @@
     renderChannels(allChannels);
 }
 
-        function renderCategories() {
-            const bar = document.getElementById('cat-container');
-            bar.innerHTML = `<button class="cat-btn" onclick="filterByCategory('All')">All</button>`;
-            Array.from(categories).sort().forEach(cat => bar.innerHTML += `<button class="cat-btn" onclick="filterByCategory('${cat}')">${cat}</button>`);
-        }
+    function renderCategories() {
+    const bar = document.getElementById('cat-container');
+    bar.innerHTML = `<button class="cat-btn" onclick="filterByCategory('All')">All (${allChannels.length})</button>`;
+    
+    Array.from(categories).sort().forEach(cat => {
+        const count = allChannels.filter(ch => ch.group === cat).length;
+        bar.innerHTML += `<button class="cat-btn" onclick="filterByCategory('${cat}')">${cat} (${count})</button>`;
+    });
+}
+
 
         function filterByCategory(cat) {
             currentActiveCategory = cat;
@@ -190,32 +195,37 @@
 
 
         function renderChannels(channels) {
-            const main = document.getElementById('main');
-            main.innerHTML = '';
-            channels.forEach((ch) => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                
-                // ইমেজ এলিমেন্ট তৈরি
-                const img = document.createElement('img');
-                img.src = ch.logo || defaultLogo;
-                
-                // এরর হ্যান্ডলিং: ইমেজ না পেলে আপনার দেওয়া লোগো দেখাবে
-                img.onerror = function() {
-                    this.src = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkC1LwR663VtQyQXKcpCfB3S-DDsaeuu63if6RkMXcZKNQeKdcyrCWvN65SjzjeMR2yDJnwuCoFavj5ncjkLPc6XKQ2GIK-UTfa8GGmc6SA58eKAHWAnmyDp64dCN8l6Qmrl2YnaorFuSmZqfSO8Hr9v_UQdeSS7QVnDXJTPOiEpMIMqsbD6zIIgUg5Ww/s1254/file_00000000ffb071fa84c1f07f7b4079e7.png';
-                };
+    const main = document.getElementById('main');
+    main.innerHTML = '';
+    channels.forEach((ch) => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        
+        // ইমেজ এলিমেন্ট তৈরি
+        const img = document.createElement('img');
+        img.src = ch.logo || 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkC1LwR663VtQyQXKcpCfB3S-DDsaeuu63if6RkMXcZKNQeKdcyrCWvN65SjzjeMR2yDJnwuCoFavj5ncjkLPc6XKQ2GIK-UTfa8GGmc6SA58eKAHWAnmyDp64dCN8l6Qmrl2YnaorFuSmZqfSO8Hr9v_UQdeSS7QVnDXJTPOiEpMIMqsbD6zIIgUg5Ww/s1254/file_00000000ffb071fa84c1f07f7b4079e7.png';
+        
+        // এরর হ্যান্ডলিং
+        img.onerror = function() {
+            this.src = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkC1LwR663VtQyQXKcpCfB3S-DDsaeuu63if6RkMXcZKNQeKdcyrCWvN65SjzjeMR2yDJnwuCoFavj5ncjkLPc6XKQ2GIK-UTfa8GGmc6SA58eKAHWAnmyDp64dCN8l6Qmrl2YnaorFuSmZqfSO8Hr9v_UQdeSS7QVnDXJTPOiEpMIMqsbD6zIIgUg5Ww/s1254/file_00000000ffb071fa84c1f07f7b4079e7.png';
+        };
 
-                div.appendChild(img);
-                div.innerHTML += `<div class="name">${ch.name}</div>`;
-                
-                div.onclick = () => {
-                    const finalString = ch.cookie ? `${ch.url}|Cookie=Edge-Cache-Cookie=${ch.cookie}` : ch.url;
-                    if (window.AppInventor) window.AppInventor.setWebViewString(finalString);
-                    else alert(finalString);
-                };
-                main.appendChild(div);
-            });
-        }
+        // নাম যোগ করার জন্য নতুন এলিমেন্ট
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'name';
+        nameDiv.innerText = ch.name;
+
+        div.appendChild(img);
+        div.appendChild(nameDiv); // innerHTML এর বদলে appendChild ব্যবহার করুন
+        
+        div.onclick = () => {
+            const finalString = ch.cookie ? `${ch.url}|Cookie=Edge-Cache-Cookie=${ch.cookie}` : ch.url;
+            if (window.AppInventor) window.AppInventor.setWebViewString(finalString);
+            else alert(finalString);
+        };
+        main.appendChild(div);
+    });
+}
 
 
 
